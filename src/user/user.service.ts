@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/common/prisma.service';
 import { AddEmployeeRequest, AddEmployeeResponse } from 'src/model/user.model';
 import { ValidationService } from 'src/common/validation.service';
+import { toUTC } from 'src/common/date.helper';
 
 @Injectable()
 export class UserService {
@@ -40,6 +41,11 @@ export class UserService {
 
     // hash password, complexity 10
     addEmpRequest.password = await bcrypt.hash(addEmpRequest.password, 10);
+
+    // convert hiredDate string to UTC Date (consistency)
+    addEmpRequest.hiredDate = toUTC(
+      addEmpRequest.hiredDate as unknown as string,
+    );
 
     // create employee / user
     const newEmp = await this.prismaService.user.create({
