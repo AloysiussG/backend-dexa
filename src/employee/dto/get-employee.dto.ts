@@ -5,6 +5,6 @@ export class EmployeeDtoResponse {
   name: string;
   email: string;
   role: Role;
-  hiredDate: Date;
-  updatedAt: Date;
+  hiredDate: string;
+  updatedAt: string;
 }

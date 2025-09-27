@@ -1,0 +1,21 @@
+export class AttendanceListDtoResponse {
+  id: number | null; // null if user has not checked in yet
+  name: string;
+  role: string;
+  date: string; // attendance date
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status: 'Present' | 'Late' | 'Absent';
+}
+
+export class AttendanceDetailDtoResponse {
+  id: number;
+  name: string;
+  role: string;
+  date: string;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status: 'Present' | 'Late' | 'Absent';
+  workingHours?: string; // calculated from checkInTime and checkOutTime
+  photoUrl?: string | null;
+}

@@ -12,7 +12,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { EmployeeValidation } from './employee.validation';
-import { toUTC } from 'src/common/date.helper';
+import { formatToGMT7, toUTC } from 'src/common/date.helper';
 import bcrypt from 'bcrypt';
 import { EmployeeDtoResponse } from './dto/get-employee.dto';
 
@@ -73,8 +73,8 @@ export class EmployeeService {
       name: emp.name,
       email: emp.email,
       role: emp.role,
-      hiredDate: emp.hiredDate,
-      updatedAt: emp.updatedAt,
+      hiredDate: formatToGMT7(emp.hiredDate), // convert to GMT
+      updatedAt: formatToGMT7(emp.updatedAt),
     }));
   }
 
@@ -89,8 +89,8 @@ export class EmployeeService {
       name: employee.name,
       email: employee.email,
       role: employee.role,
-      hiredDate: employee.hiredDate,
-      updatedAt: employee.updatedAt,
+      hiredDate: formatToGMT7(employee.hiredDate),
+      updatedAt: formatToGMT7(employee.updatedAt),
     };
   }
 
@@ -130,6 +130,9 @@ export class EmployeeService {
     if (newData?.password) {
       newData.password = await bcrypt.hash(newData.password, 10);
     }
+
+    // convert hiredDate string to UTC Date (consistency)
+    newData.hiredDate = toUTC(newData.hiredDate as unknown as string);
 
     const updatedEmployee = await this.prismaService.user.update({
       where: { id },
