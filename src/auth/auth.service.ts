@@ -2,7 +2,7 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';
-import { LoginRequest, LoginResponse } from 'src/model/auth.model';
+import { LoginRequest, LoginResponse } from 'src/auth/dto/auth.dto';
 import { Logger } from 'winston';
 import { AuthValidation } from './auth.validation';
 import bcrypt from 'bcrypt';

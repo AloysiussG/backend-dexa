@@ -5,8 +5,8 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { WebResponse } from 'src/model/web.model';
-import { AddEmployeeResponse } from 'src/model/user.model';
+import { WebResponse } from 'src/model/web.dto';
+import { AddEmployeeResponse } from 'src/user/dto/get-user.dto';
 import { TestService } from './test.service';
 import { TestModule } from './test.module';
 
