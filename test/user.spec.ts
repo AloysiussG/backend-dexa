@@ -6,11 +6,11 @@ import { App } from 'supertest/types';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { WebResponse } from 'src/model/web.dto';
-import { AddEmployeeResponse } from 'src/user/dto/get-user.dto';
 import { TestService } from './test.service';
 import { TestModule } from './test.module';
+import { CreateEmployeeDtoResponse } from 'src/employee/dto/create-employee.dto';
 
-describe('UserController', () => {
+describe('EmployeeController', () => {
   let app: INestApplication<App>;
   let logger: Logger;
   let testService: TestService;
@@ -27,14 +27,14 @@ describe('UserController', () => {
     testService = app.get(TestService);
   });
 
-  describe('POST /api/users', () => {
+  describe('POST /api/employees', () => {
     beforeEach(async () => {
       await testService.deleteEmployee();
     });
 
     it('should be rejected if request invalid', async () => {
       const response = await request(app.getHttpServer())
-        .post('/api/users')
+        .post('/api/employees')
         .send({
           email: '',
         });
@@ -47,7 +47,7 @@ describe('UserController', () => {
 
     it('should be able to add employee', async () => {
       const response = await request(app.getHttpServer())
-        .post('/api/users')
+        .post('/api/employees')
         .send({
           name: 'John Doe',
           email: 'johndoe@gmail.com',
@@ -58,7 +58,7 @@ describe('UserController', () => {
 
       logger.info(response.body);
 
-      const { data } = response.body as WebResponse<AddEmployeeResponse>;
+      const { data } = response.body as WebResponse<CreateEmployeeDtoResponse>;
 
       expect(response.status).toBe(200);
       expect(data.id).toBeDefined();
@@ -69,7 +69,7 @@ describe('UserController', () => {
       // create first
       await testService.addEmployee();
       const response = await request(app.getHttpServer())
-        .post('/api/users')
+        .post('/api/employees')
         .send({
           name: 'John Doe',
           email: 'johndoe@gmail.com',
@@ -80,7 +80,7 @@ describe('UserController', () => {
 
       logger.info(response.body);
 
-      const body = response.body as WebResponse<AddEmployeeResponse>;
+      const body = response.body as WebResponse<CreateEmployeeDtoResponse>;
 
       expect(response.status).toBe(400);
       expect(body.errors).toBeDefined();
