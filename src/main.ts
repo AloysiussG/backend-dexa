@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { LoggerService } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 // sementara tidak menggunakan .env supaya mudah &
 // dapat langsung dipakai untuk test
@@ -13,11 +14,15 @@ export const URL = {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // cookie parser
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  app.use(cookieParser());
+
   // winston
   const logger = app.get<LoggerService>(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
 
-  // Enable CORS
+  // enable CORS
   app.enableCors({
     origin: URL.NEXT_FRONTEND_APP_URL,
     credentials: true,

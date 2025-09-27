@@ -18,7 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
   async use(req: RequestWithUser, res: Response, next: NextFunction) {
     // get token from authenticated request
     // Try cookie first, fallback to Authorization header
-    const cookieToken = req.cookies?.token;
+    const cookieToken = req.cookies['token'];
 
     let headerToken = req.headers['authorization'];
 
