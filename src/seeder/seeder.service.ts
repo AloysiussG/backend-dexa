@@ -9,6 +9,7 @@ interface SeedUser {
   id: number;
   name: string;
   email: string;
+  password: string;
   role: 'HR' | 'Employee';
   createdAt: string;
   updatedAt: string;
@@ -52,7 +53,7 @@ export class SeederService {
       });
       if (!existing) {
         // Optional: hash default password
-        const password = await bcrypt.hash('defaultPassword123', 10);
+        const password = await bcrypt.hash(user.password, 10);
 
         await this.prisma.user.create({
           data: {
