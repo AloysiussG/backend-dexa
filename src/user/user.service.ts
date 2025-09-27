@@ -10,14 +10,15 @@ import { toUTC } from 'src/common/date.helper';
 
 @Injectable()
 export class UserService {
-  /**
-   *
-   */
   constructor(
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private prismaService: PrismaService,
   ) {}
+
+  //   async getUserById(id: string): Promise<AddEmployeeResponse | undefined> {
+  //     return undefined;
+  //   }
 
   async addEmployee(request: AddEmployeeRequest): Promise<AddEmployeeResponse> {
     this.logger.info(`Add Employee ${JSON.stringify(request)}`);
