@@ -50,9 +50,8 @@ export class AttendanceService {
 
       if (attendance?.checkInTime && attendance?.checkOutTime) {
         const checkInLocal = formatToGMT7(attendance.checkInTime, 'HH:mm');
-        const checkOutLocal = formatToGMT7(attendance.checkOutTime, 'HH:mm');
 
-        if (checkInLocal <= '08:15' && checkOutLocal >= '17:00') {
+        if (checkInLocal <= '08:15') {
           status = 'Present';
         } else if (checkInLocal > '08:15') {
           status = 'Late';
@@ -146,9 +145,8 @@ export class AttendanceService {
 
     if (attendance?.checkInTime && attendance?.checkOutTime) {
       const checkInLocal = formatToGMT7(attendance.checkInTime, 'HH:mm');
-      const checkOutLocal = formatToGMT7(attendance.checkOutTime, 'HH:mm');
 
-      if (checkInLocal <= '08:15' && checkOutLocal >= '17:00') {
+      if (checkInLocal <= '08:15') {
         status = 'Present';
       } else if (checkInLocal > '08:15') {
         status = 'Late';
