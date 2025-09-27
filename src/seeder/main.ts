@@ -9,6 +9,8 @@ async function bootstrap() {
   try {
     const seeder = appContext.get(SeederService);
 
+    await seeder.unseedUsers(); // delete all rows first
+
     // Call your seeder method
     await seeder.seedUsers(); // or seedAttendances(), etc.
 

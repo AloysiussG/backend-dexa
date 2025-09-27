@@ -3,6 +3,7 @@ import { PrismaService } from '../common/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
+import { toUTC } from '../common/date.helper';
 
 interface SeedUser {
   id: number;
@@ -18,9 +19,15 @@ interface SeedUser {
 export class SeederService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async unseedUsers() {
+    // Delete all users (cascades to attendances if have `onDelete: CASCADE`)
+    await this.prisma.user.deleteMany({});
+    console.log('All users deleted');
+  }
+
   async seedUsers() {
     // Load JSON data
-    const filePath = path.join(__dirname, 'users.json'); // your JSON file path
+    const filePath = path.join(__dirname, 'users.json'); // JSON file path
     const rawData = fs.readFileSync(filePath, 'utf-8');
     const users = JSON.parse(rawData) as SeedUser[];
 
@@ -38,9 +45,9 @@ export class SeederService {
             name: user.name,
             email: user.email,
             role: user.role,
-            hiredDate: user.hiredDate ? new Date(user.hiredDate) : new Date(),
-            createdAt: new Date(user.createdAt),
-            updatedAt: new Date(user.updatedAt),
+            hiredDate: user.hiredDate
+              ? toUTC(user.hiredDate)
+              : toUTC(new Date().toISOString()),
             password,
           },
         });
