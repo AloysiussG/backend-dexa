@@ -16,12 +16,13 @@ datasource db {
 model User {
     id        Int      @id @default(autoincrement())
     name      String   @db.VarChar(255)
-    email     String   @db.VarChar(255)
+    email     String   @unique @db.VarChar(255)
     password  String   @db.VarChar(255)
     role      Role
     hiredDate DateTime
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    token     String?
 
     attendances Attendance[]
 
@@ -34,13 +35,13 @@ enum Role {
 }
 
 model Attendance {
-    id           Int              @id @default(autoincrement())
+    id           Int               @id @default(autoincrement())
     date         DateTime
     checkInTime  DateTime?
     checkOutTime DateTime?
-    status       AttendanceStatus
-    createdAt    DateTime         @default(now())
-    updatedAt    DateTime         @updatedAt
+    status       AttendanceStatus?
+    createdAt    DateTime          @default(now())
+    updatedAt    DateTime          @updatedAt
     photoUrl     String
 
     // Relation

@@ -4,9 +4,14 @@ import { Logger } from 'winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/common/prisma.service';
-import { AddEmployeeRequest, AddEmployeeResponse } from 'src/model/user.model';
+import {
+  AddEmployeeRequest,
+  AddEmployeeResponse,
+  UserResponse,
+} from 'src/model/user.model';
 import { ValidationService } from 'src/common/validation.service';
 import { toUTC } from 'src/common/date.helper';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -16,9 +21,16 @@ export class UserService {
     private prismaService: PrismaService,
   ) {}
 
-  //   async getUserById(id: string): Promise<AddEmployeeResponse | undefined> {
-  //     return undefined;
-  //   }
+  // tanpa async, logic ada pada middleware untuk get user by token
+  getUser(user: User): UserResponse {
+    return {
+      id: user.id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      hiredDate: user.hiredDate,
+    };
+  }
 
   async addEmployee(request: AddEmployeeRequest): Promise<AddEmployeeResponse> {
     this.logger.info(`Add Employee ${JSON.stringify(request)}`);

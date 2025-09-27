@@ -23,6 +23,7 @@ export class TestService {
         password: await bcrypt.hash('johndoe', 10),
         role: 'Employee',
         hiredDate: toUTC('2025-09-25'),
+        token: 'test',
       },
     });
   }
