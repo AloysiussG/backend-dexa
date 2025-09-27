@@ -4,6 +4,7 @@ import { CreateEmployeeDtoResponse } from './create-employee.dto';
 export class UpdateEmployeeDtoRequest {
   name: string;
   email: string;
+  password?: string;
   role: Role;
   hiredDate: Date;
 }

@@ -15,6 +15,7 @@ import {
 } from './dto/create-employee.dto';
 import { WebResponse } from 'src/model/web.dto';
 import { UpdateEmployeeDtoRequest } from './dto/update-employee.dto';
+import { EmployeeDtoResponse } from './dto/get-employee.dto';
 
 @Controller('/api/employees')
 export class EmployeeController {
@@ -32,25 +33,31 @@ export class EmployeeController {
   }
 
   @Get()
-  findAll() {
-    return this.employeeService.findAll();
+  async findAll(): Promise<WebResponse<EmployeeDtoResponse[]>> {
+    const result = await this.employeeService.findAll();
+    return { data: result };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.employeeService.findOne(+id);
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<WebResponse<EmployeeDtoResponse>> {
+    const result = await this.employeeService.findOne(+id);
+    return { data: result };
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDtoRequest,
-  ) {
-    return this.employeeService.update(+id, updateEmployeeDto);
+  ): Promise<WebResponse<CreateEmployeeDtoResponse>> {
+    const result = await this.employeeService.update(+id, updateEmployeeDto);
+    return { data: result };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeeService.remove(+id);
+  async remove(@Param('id') id: string): Promise<WebResponse<{ id: string }>> {
+    const result = await this.employeeService.remove(+id);
+    return { data: result };
   }
 }
