@@ -24,6 +24,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production', // https true in prod
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
+      path: '/',
     });
 
     return {
@@ -36,15 +37,16 @@ export class AuthController {
   @HttpCode(200)
   async logout(
     @Auth() user: User,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<WebResponse<boolean>> {
     await this.authService.logout(user);
 
     // clear cookie
     res.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production', // https true in prod
       sameSite: 'lax',
+      path: '/',
     });
 
     return {
