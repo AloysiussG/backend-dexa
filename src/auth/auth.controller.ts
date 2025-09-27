@@ -1,8 +1,10 @@
-import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequest, LoginResponse } from 'src/auth/dto/auth.dto';
 import { WebResponse } from 'src/model/web.dto';
 import type { Response } from 'express';
+import { Auth } from 'src/common/auth.decorator';
+import type { User } from '@prisma/client';
 
 @Controller('/api/auth')
 export class AuthController {
@@ -27,6 +29,27 @@ export class AuthController {
     return {
       data: result,
       message: 'Login success.',
+    };
+  }
+
+  @Delete('/logout')
+  @HttpCode(200)
+  async logout(
+    @Auth() user: User,
+    @Res() res: Response,
+  ): Promise<WebResponse<boolean>> {
+    await this.authService.logout(user);
+
+    // clear cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return {
+      data: true,
+      message: 'Logged out successfully',
     };
   }
 }

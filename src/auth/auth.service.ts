@@ -7,6 +7,8 @@ import { Logger } from 'winston';
 import { AuthValidation } from './auth.validation';
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import { Response } from 'express';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -59,5 +61,18 @@ export class AuthService {
       name: user.name,
       token: user?.token ? (user.token as string) : '',
     };
+  }
+
+  async logout(user: User): Promise<boolean> {
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        token: null,
+      },
+    });
+
+    return true;
   }
 }
