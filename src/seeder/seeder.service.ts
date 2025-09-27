@@ -15,9 +15,23 @@ interface SeedUser {
   hiredDate: string;
 }
 
+interface SeedAttendance {
+  userId: number;
+  date: string;
+  checkInTime: string;
+  checkOutTime?: string;
+  status?: 'Present' | 'Late' | 'Absent';
+  photoUrl?: string;
+}
+
 @Injectable()
 export class SeederService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async unseedAttendances() {
+    await this.prisma.attendance.deleteMany({});
+    console.log('All attendances deleted');
+  }
 
   async unseedUsers() {
     // Delete all users (cascades to attendances if have `onDelete: CASCADE`)
@@ -27,7 +41,7 @@ export class SeederService {
 
   async seedUsers() {
     // Load JSON data
-    const filePath = path.join(__dirname, 'users.json'); // JSON file path
+    const filePath = path.join(__dirname, 'data', 'users.json'); // JSON file path
     const rawData = fs.readFileSync(filePath, 'utf-8');
     const users = JSON.parse(rawData) as SeedUser[];
 
@@ -42,6 +56,7 @@ export class SeederService {
 
         await this.prisma.user.create({
           data: {
+            id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
@@ -55,5 +70,29 @@ export class SeederService {
     }
 
     console.log('Users seeded successfully');
+  }
+
+  async seedAttendances() {
+    // Load JSON data
+    const filePath = path.join(__dirname, 'data', 'attendances.json'); // JSON file path
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+    const attendances = JSON.parse(rawData) as SeedAttendance[];
+
+    for (const attendance of attendances) {
+      await this.prisma.attendance.create({
+        data: {
+          userId: attendance.userId,
+          date: toUTC(attendance.date),
+          checkInTime: toUTC(attendance.checkInTime),
+          checkOutTime: attendance.checkOutTime
+            ? toUTC(attendance.checkOutTime)
+            : null,
+          status: attendance.status,
+          photoUrl: attendance.photoUrl || '',
+        },
+      });
+    }
+
+    console.log('Attendances seeded successfully');
   }
 }
