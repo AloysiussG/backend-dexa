@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/prisma.service';
 import {
   AttendanceDetailDtoResponse,
@@ -12,10 +12,77 @@ import {
   getWorkingHoursInGMT7,
 } from './attendance.helper';
 import { formatInTimeZone } from 'date-fns-tz';
+import {
+  CreateAttendanceDtoRequest,
+  CreateAttendanceDtoResponse,
+} from './dto/create-attendance.dto';
+import { ValidationService } from 'src/common/validation.service';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { AttendanceValidation } from './attendance.validation';
 
 @Injectable()
 export class AttendanceService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private validationService: ValidationService,
+    @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
+    private readonly prismaService: PrismaService,
+  ) {}
+
+  // Check-in
+  async checkIn(
+    user: User,
+    data: CreateAttendanceDtoRequest,
+  ): Promise<CreateAttendanceDtoResponse> {
+    this.logger.info(`Create Attendance ${JSON.stringify(data)}`);
+
+    // validation
+    const attendanceRequest =
+      this.validationService.validate<CreateAttendanceDtoRequest>(
+        AttendanceValidation.CREATE_ATTENDANCE,
+        data,
+      );
+
+    // get today (Jakarta perspective)
+    const nowJakarta = new Date(); // local server time, but we treat it as "today" Jakarta
+
+    // truncate to midnight Jakarta, then convert to UTC for DB
+    const todayUtc = toUTC(
+      formatInTimeZone(nowJakarta, TIMEZONE, 'yyyy-MM-dd'), // "2025-09-28" -> prioritize date only
+    );
+
+    // get the actual timestamp
+    // convert the actual check-in timestamp to UTC
+    const checkInUtc = toUTC(
+      formatInTimeZone(nowJakarta, TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss"),
+    );
+
+    // make sure there is no attendance for today
+    const attendance = await this.prismaService.attendance.findFirst({
+      where: { userId: user.id, date: todayUtc },
+      include: { User: true },
+    });
+
+    // if there is any attendance, throw error
+    if (attendance) {
+      throw new HttpException('You have already checked-in for today', 400);
+    }
+
+    // create attendance
+    const newAttendance = await this.prismaService.attendance.create({
+      data: {
+        date: todayUtc,
+        checkInTime: checkInUtc,
+        userId: user.id,
+        status: getAttendanceStatusInGMT7(checkInUtc),
+        photoUrl: attendanceRequest.photoUrl,
+      },
+    });
+
+    return {
+      id: newAttendance.id,
+    };
+  }
 
   /**
    * Get all users attendances for a date

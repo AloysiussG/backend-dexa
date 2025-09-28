@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+  Post,
+  Patch,
+  Body,
+} from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from 'src/common/roles.guard';
@@ -11,6 +20,11 @@ import {
 import { WebResponse } from 'src/model/web.dto';
 import { Auth } from 'src/common/auth.decorator';
 import type { User } from '@prisma/client';
+import {
+  CreateAttendanceDtoRequest,
+  CreateAttendanceDtoResponse,
+} from './dto/create-attendance.dto';
+import { UpdateAttendanceDtoResponse } from './dto/update-attendance.dto';
 
 @UseGuards(RolesGuard)
 @Controller('/api/attendances')
@@ -26,6 +40,22 @@ export class AttendanceController {
     return {
       data,
       message: `Your attendance details retrieved successfully for today.`,
+    };
+  }
+
+  // Handle check in for current user
+  @Post('/check-in')
+  async checkIn(
+    @Auth() user: User,
+    @Body() createAttendanceDto: CreateAttendanceDtoRequest,
+  ): Promise<WebResponse<CreateAttendanceDtoResponse>> {
+    const data = await this.attendanceService.checkIn(
+      user,
+      createAttendanceDto,
+    );
+    return {
+      data,
+      message: `Your successfully check-in for today.`,
     };
   }
 
