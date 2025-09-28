@@ -55,11 +55,24 @@ export class AttendanceController {
     );
     return {
       data,
-      message: `Your successfully check-in for today.`,
+      message: `You have successfully check-in for today.`,
     };
   }
 
-  // (1) List attendances for a date
+  // Handle check out for current user
+  @Patch('/check-out')
+  async checkOut(
+    @Auth() user: User,
+    @Param('id') id: string,
+  ): Promise<WebResponse<UpdateAttendanceDtoResponse>> {
+    const data = await this.attendanceService.checkOut(+id, user);
+    return {
+      data,
+      message: `You have successfully check-out for today.`,
+    };
+  }
+
+  // list attendances for a date
   @Get()
   @Roles('HR')
   async getAttendances(
@@ -72,7 +85,7 @@ export class AttendanceController {
     };
   }
 
-  // (2) Get single attendance detail
+  // get single attendance detail
   @Get(':id')
   @Roles('HR')
   async getAttendance(

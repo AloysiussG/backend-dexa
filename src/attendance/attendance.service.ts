@@ -20,6 +20,7 @@ import { ValidationService } from 'src/common/validation.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { AttendanceValidation } from './attendance.validation';
+import { UpdateAttendanceDtoResponse } from './dto/update-attendance.dto';
 
 @Injectable()
 export class AttendanceService {
@@ -28,6 +29,53 @@ export class AttendanceService {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private readonly prismaService: PrismaService,
   ) {}
+
+  // Check-out
+  async checkOut(id: number, user: User): Promise<UpdateAttendanceDtoResponse> {
+    // get today (Jakarta perspective)
+    const nowJakarta = new Date(); // local server time, but we treat it as "today" Jakarta
+
+    // truncate to midnight Jakarta, then convert to UTC for DB
+    const todayUtc = toUTC(
+      formatInTimeZone(nowJakarta, TIMEZONE, 'yyyy-MM-dd'), // "2025-09-28" -> prioritize date only
+    );
+
+    // get the actual timestamp
+    // convert the actual check-in timestamp to UTC
+    const checkOutUtc = toUTC(
+      formatInTimeZone(nowJakarta, TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss"),
+    );
+
+    // search for attendance
+    const attendance = await this.prismaService.attendance.findFirst({
+      where: {
+        id,
+        userId: user.id,
+        date: todayUtc,
+        checkOutTime: null,
+        checkInTime: { not: null }, // ensure they did check-in
+      },
+      include: { User: true },
+    });
+
+    // this already filters if the attendance is theirs
+    // the attendance date is today (since we can only check out today)
+    // and is the check out time still null (active attendance)
+    // and check in time isnt null
+    if (!attendance) throw new HttpException('Attendance not found', 404);
+
+    // if found update the check out time
+    const newAttendance = await this.prismaService.attendance.update({
+      where: { id },
+      data: {
+        checkOutTime: checkOutUtc,
+      },
+    });
+
+    return {
+      id: newAttendance.id,
+    };
+  }
 
   // Check-in
   async checkIn(
