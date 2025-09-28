@@ -167,7 +167,11 @@ export class AttendanceService {
       const attendance = attendances.find((a) => a.userId === user.id);
 
       // status logic using GMT+7
-      const status = getAttendanceStatusInGMT7(
+      const status = getAttendanceStatusInGMT7(attendance?.checkInTime);
+
+      // if found return the details
+      // calculate working hours in GMT+7
+      const workingHours = getWorkingHoursInGMT7(
         attendance?.checkInTime,
         attendance?.checkOutTime,
       );
@@ -175,6 +179,7 @@ export class AttendanceService {
       return {
         id: attendance?.id ?? null,
         name: user.name,
+        email: user.email,
         role: user.role,
         date: formatToGMT7(attendance?.date || attendanceDateUTC, 'yyyy-MM-dd'),
         checkInTime: attendance?.checkInTime
@@ -183,6 +188,7 @@ export class AttendanceService {
         checkOutTime: attendance?.checkOutTime
           ? formatToGMT7(attendance.checkOutTime, 'HH:mm')
           : null,
+        workingHours,
         status,
       };
     });
@@ -223,10 +229,7 @@ export class AttendanceService {
     );
 
     // status logic using GMT+7
-    const status = getAttendanceStatusInGMT7(
-      attendance.checkInTime,
-      attendance.checkOutTime,
-    );
+    const status = getAttendanceStatusInGMT7(attendance.checkInTime);
 
     return {
       id: attendance.id,
@@ -263,15 +266,13 @@ export class AttendanceService {
     );
 
     // status logic using GMT+7
-    const status = getAttendanceStatusInGMT7(
-      attendance.checkInTime,
-      attendance.checkOutTime,
-    );
+    const status = getAttendanceStatusInGMT7(attendance.checkInTime);
 
     return {
       id: attendance.id,
       name: attendance.User?.name ?? 'Unknown',
       role: attendance.User?.role ?? 'Employee',
+      email: attendance.User?.email,
       date: formatToGMT7(attendance.date, 'yyyy-MM-dd'),
       checkInTime: attendance.checkInTime
         ? formatToGMT7(attendance.checkInTime, 'HH:mm:ss')

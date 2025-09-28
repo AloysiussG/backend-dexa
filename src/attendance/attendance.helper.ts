@@ -26,10 +26,7 @@ export const getWorkingHoursInGMT7 = (
   return workingHours;
 };
 
-export const getAttendanceStatusInGMT7 = (
-  checkInTimeUTC?: Date | null,
-  checkOutTimeUTC?: Date | null,
-) => {
+export const getAttendanceStatusInGMT7 = (checkInTimeUTC?: Date | null) => {
   // status logic using GMT+7
   let status: 'Present' | 'Late' | 'Absent';
 
