@@ -33,6 +33,7 @@ export class AttendanceController {
 
   // Get current attendance for current user
   @Get('/current')
+  @Roles('Employee', 'HR')
   async getCurrentAttendanceOfUser(
     @Auth() user: User,
   ): Promise<WebResponse<CurrentAttendanceDetailDtoResponse>> {
@@ -45,6 +46,7 @@ export class AttendanceController {
 
   // Handle check in for current user
   @Post('/check-in')
+  @Roles('Employee', 'HR')
   async checkIn(
     @Auth() user: User,
     @Body() createAttendanceDto: CreateAttendanceDtoRequest,
@@ -61,6 +63,7 @@ export class AttendanceController {
 
   // Handle check out for current user
   @Patch('/check-out/:id')
+  @Roles('Employee', 'HR')
   async checkOut(
     @Auth() user: User,
     @Param('id') id: string,

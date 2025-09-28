@@ -8,6 +8,7 @@ import {
   ParseFilePipeBuilder,
   HttpCode,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Express, Request } from 'express';
@@ -16,7 +17,9 @@ import { extname } from 'path';
 import { WebResponse } from 'src/model/web.dto';
 import { v4 as uuid } from 'uuid';
 import { UploadImageDtoResponse } from './dto/upload-image.dto';
+import { AuthGuard } from 'src/common/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('/api/upload')
 export class UploadController {
   @Post('image')
