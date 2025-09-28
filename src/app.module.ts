@@ -6,6 +6,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { SeederModule } from './seeder/seeder.module';
 import { UploadModule } from './upload/upload.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UploadModule } from './upload/upload.module';
     AttendanceModule,
     SeederModule,
     UploadModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [],
