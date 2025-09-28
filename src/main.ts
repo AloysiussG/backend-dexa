@@ -9,8 +9,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 // sementara tidak menggunakan .env supaya mudah &
 // dapat langsung dipakai untuk test
 export const URL = {
-  NEXT_FRONTEND_APP_URL: 'http://localhost:3000',
-  NEST_BACKEND_APP_URL: 'http://localhost:8000',
+  NEXT_FRONTEND_APP_URL:
+    process.env.NEXT_PUBLIC_FRONTEND_APP_URL || 'http://localhost:3000',
+  NEST_BACKEND_APP_URL:
+    process.env.NEXT_PUBLIC_BACKEND_APP_URL || 'http://localhost:8000',
 };
 
 export const PORT = process.env.PORT ?? 8000;
