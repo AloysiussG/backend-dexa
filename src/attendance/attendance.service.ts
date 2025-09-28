@@ -8,6 +8,7 @@ import {
 import { formatToGMT7, TIMEZONE, toUTC } from 'src/common/date.helper';
 import { User } from '@prisma/client';
 import {
+  calculateLateDuration,
   getAttendanceStatusInGMT7,
   getWorkingHoursInGMT7,
 } from './attendance.helper';
@@ -176,6 +177,11 @@ export class AttendanceService {
         attendance?.checkOutTime,
       );
 
+      let lateDuration = '';
+      if (status == 'Late' && attendance?.checkInTime) {
+        lateDuration = calculateLateDuration(attendance?.checkInTime);
+      }
+
       return {
         id: attendance?.id ?? null,
         name: user.name,
@@ -190,6 +196,7 @@ export class AttendanceService {
           : null,
         workingHours,
         status,
+        lateDuration,
       };
     });
   }
@@ -231,6 +238,11 @@ export class AttendanceService {
     // status logic using GMT+7
     const status = getAttendanceStatusInGMT7(attendance.checkInTime);
 
+    let lateDuration = '';
+    if (status == 'Late' && attendance.checkInTime) {
+      lateDuration = calculateLateDuration(attendance.checkInTime);
+    }
+
     return {
       id: attendance.id,
       name: attendance.User?.name ?? 'Unknown',
@@ -245,6 +257,7 @@ export class AttendanceService {
       status: status,
       workingHours,
       photoUrl: attendance.photoUrl ?? null,
+      lateDuration,
     };
   }
 
@@ -268,6 +281,11 @@ export class AttendanceService {
     // status logic using GMT+7
     const status = getAttendanceStatusInGMT7(attendance.checkInTime);
 
+    let lateDuration = '';
+    if (status == 'Late' && attendance.checkInTime) {
+      lateDuration = calculateLateDuration(attendance.checkInTime);
+    }
+
     return {
       id: attendance.id,
       name: attendance.User?.name ?? 'Unknown',
@@ -283,6 +301,7 @@ export class AttendanceService {
       status: status,
       workingHours,
       photoUrl: attendance.photoUrl ?? null,
+      lateDuration,
     };
   }
 }

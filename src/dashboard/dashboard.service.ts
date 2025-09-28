@@ -6,6 +6,11 @@ import { PrismaService } from 'src/common/prisma.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TIMEZONE, toUTC } from 'src/common/date.helper';
 import { formatInTimeZone } from 'date-fns-tz';
+import {
+  MAX_CHECK_IN_TIME,
+  MIN_CHECK_OUT_TIME,
+  STD_WORKING_HOURS,
+} from 'src/attendance/attendance.helper';
 
 @Injectable()
 export class DashboardService {
@@ -33,13 +38,19 @@ export class DashboardService {
       });
 
       return {
+        maxCheckIn: MAX_CHECK_IN_TIME,
+        minCheckOut: MIN_CHECK_OUT_TIME,
+        stdWorkingHours: STD_WORKING_HOURS,
         role: 'HR',
         employeesCount,
         attendancesCount,
       };
     }
     return {
-      role: 'Employee',
+      maxCheckIn: MAX_CHECK_IN_TIME,
+      stdWorkingHours: STD_WORKING_HOURS,
+      minCheckOut: MIN_CHECK_OUT_TIME,
+      role: user.role,
     };
   }
 }

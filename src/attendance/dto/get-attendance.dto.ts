@@ -8,6 +8,7 @@ export class AttendanceListDtoResponse {
   checkOutTime?: string | null;
   status: 'Present' | 'Late' | 'Absent';
   workingHours?: string; // calculated from checkInTime and checkOutTime
+  lateDuration?: string;
 }
 
 export class AttendanceDetailDtoResponse {
@@ -21,6 +22,7 @@ export class AttendanceDetailDtoResponse {
   status: 'Present' | 'Late' | 'Absent';
   workingHours?: string; // calculated from checkInTime and checkOutTime
   photoUrl?: string | null;
+  lateDuration?: string;
 }
 
 export class CurrentAttendanceDetailDtoResponse {
@@ -34,4 +36,5 @@ export class CurrentAttendanceDetailDtoResponse {
   status?: 'Present' | 'Late' | 'Absent';
   workingHours?: string; // calculated from checkInTime and checkOutTime
   photoUrl?: string | null;
+  lateDuration?: string;
 }

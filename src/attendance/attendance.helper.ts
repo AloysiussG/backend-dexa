@@ -1,5 +1,37 @@
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMinutes, parse } from 'date-fns';
 import { formatToGMT7 } from 'src/common/date.helper';
+
+export const MAX_CHECK_IN_TIME = '08:15';
+export const MIN_CHECK_OUT_TIME = '17:00';
+
+export const calculateLateDuration = (checkInTimeUTC: Date): string => {
+  // Use today’s date in GMT+7 (for both 2 compared)
+  const todayStr = formatToGMT7(new Date(), 'yyyy-MM-dd');
+  const actualTime = formatToGMT7(checkInTimeUTC, 'HH:mm:ss');
+  const maxTime = MAX_CHECK_IN_TIME + ':00';
+
+  const maxCheckInDate = parse(
+    `${todayStr} ${maxTime}`,
+    'yyyy-MM-dd HH:mm',
+    new Date(),
+  );
+
+  const actualCheckInDate = parse(
+    `${todayStr} ${actualTime}`,
+    'yyyy-MM-dd HH:mm',
+    new Date(),
+  );
+
+  // If on time or early
+  if (actualCheckInDate <= maxCheckInDate) return '0h 0m';
+
+  // Calculate late duration
+  const diffMinutes = differenceInMinutes(actualCheckInDate, maxCheckInDate);
+  const hours = Math.floor(diffMinutes / 60);
+  const minutes = diffMinutes % 60;
+
+  return `${hours}h ${minutes}m`;
+};
 
 export const getWorkingHoursInGMT7 = (
   checkInTimeUTC?: Date | null,
@@ -33,9 +65,9 @@ export const getAttendanceStatusInGMT7 = (checkInTimeUTC?: Date | null) => {
   if (checkInTimeUTC) {
     const checkInLocal = formatToGMT7(checkInTimeUTC, 'HH:mm');
 
-    if (checkInLocal <= '08:15') {
+    if (checkInLocal <= MAX_CHECK_IN_TIME) {
       status = 'Present';
-    } else if (checkInLocal > '08:15') {
+    } else if (checkInLocal > MAX_CHECK_IN_TIME) {
       status = 'Late';
     } else {
       status = 'Absent';
@@ -46,3 +78,8 @@ export const getAttendanceStatusInGMT7 = (checkInTimeUTC?: Date | null) => {
 
   return status;
 };
+
+export const STD_WORKING_HOURS = getWorkingHoursInGMT7(
+  parse(MAX_CHECK_IN_TIME, 'HH:mm', new Date()),
+  parse(MIN_CHECK_OUT_TIME, 'HH:mm', new Date()),
+);
