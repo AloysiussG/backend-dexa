@@ -2,11 +2,30 @@
 
 ## Overview
 
-This project was built by **Aloysius Gonzaga Seto Galih D.** as part of the **Dexa Group Full-Stack Developer Skill Test**, designed to provide a **comprehensive attendance management system** for employees and HR staff. The application allows seamless **remote work tracking**, including **Work From Home (WFH)** scenarios, where employees can log their presence, upload proof of attendance, and track their daily work hours.
+This project was built by **Aloysius Gonzaga Seto Galih D.** as part of the **Dexa Group Full-Stack Developer Skill Test**, designed to provide a **comprehensive attendance management system** for employees and HR staff.
+
+The application allows seamless **remote work tracking**, including **Work From Home (WFH)** scenarios, where employees can log their presence, upload proof of attendance, and track their daily work hours.
 
 ![Login Screenshot](./docs/screenshots/login.png)
 
-![Login Screenshot](./docs/screenshots/dash-main.png)
+![Main Dash Screenshot](./docs/screenshots/dash-main.png)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key & Feature Highlights](#key--feature-highlights)
+- [Use Cases](#use-cases)
+- [Tech Stacks](#tech-stacks)
+- [Front-end Tech & Features](#front-end-tech--features)
+- [Back-end Tech & Features](#back-end-tech--features)
+- [API Endpoints](#api-endpoints)
+- [Usage / Project Setup](#usage--project-setup)
+- [Dummy Data for Testing (Login)](#dummy-data-for-testing-login)
+- [Notes](#notes)
+
+---
 
 ## Key & Feature Highlights
 
@@ -17,6 +36,8 @@ This project was built by **Aloysius Gonzaga Seto Galih D.** as part of the **De
 - **Clean and responsive UI design**: A modern, intuitive, beautiful, clean, and mobile-friendly interface built with Next.js and ShadCN UI.
 - **Time-zone aware system**: All timestamps are stored in UTC, displayed in GMT+7 for consistency.
 - **Secure authentication**: Access control is implemented via role-based guards and HTTP-only cookies to protect sensitive information.
+
+---
 
 ## Use Cases
 
@@ -34,22 +55,6 @@ This web application is designed to address common HR and employee needs in a mo
    ![Dashboard Screenshot](./docs/screenshots/dash-attendances-clip.png)
    - An admin (HR) dashboard for managing employee data, such as create and update employee records.
    - Monitor submitted attendance in a **view-only** mode.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Key & Feature Highlights](#key--feature-highlights)
-- [Use Cases](#use-cases)
-- [Tech Stacks](#tech-stacks)
-- [Front-end Tech & Features](#front-end-tech--features)
-- [Back-end Tech & Features](#back-end-tech--features)
-- [API Endpoints](#api-endpoints)
-- [Usage/Project Setup](#usage--project-setup)
-- [Dummy Data for Testing (Login)](#dummy-data-for-testing-login)
-- [Usage](#usage)
-- [Notes](#notes)
 
 ---
 
@@ -204,7 +209,7 @@ Install dependencies:
 npm install
 ```
 
-**(Optional)** Setup environment variables. For temporary quick test, the URL endpoints are already stored in the files. The default port of the front-end are set to 3000. Please see the **project directories**.
+**(Optional)** Setup **.env** environment variables. For temporary quick test, the URL endpoints are already stored in the files. The default port of the front-end are set to 3000. Please see the **project directories**.
 
 ```env
 NEXT_PUBLIC_FRONTEND_APP_URL=http://localhost:3000
@@ -217,13 +222,20 @@ Run the project:
 npm run dev
 ```
 
+**(Optional)** Instead of `npm run dev`, you can run by building the application first for a **smoother user experience**:
+
+```bash
+npm run build
+npm run start
+```
+
 Open the browser:
 
 ```arduino
 http://localhost:3000
 ```
 
-You will see the login page and continue to use the app with some of these provided credentials for testing. The data are shown in the next section below.
+You will be redirected to the **/login** page and continue to use the app with some of these provided credentials for testing. The data are shown in the next section below.
 
 ---
 
@@ -246,7 +258,7 @@ You can log in using the **email** and **password** provided below. All password
 2. Open the login page:
 
    ```arduino
-   http://localhost:3000
+   http://localhost:3000/login
    ```
 
 3. Enter the email and password of any dummy user from the table above.
