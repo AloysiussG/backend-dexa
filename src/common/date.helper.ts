@@ -1,7 +1,7 @@
 // src/common/date.helper.ts
 import { fromZonedTime, formatInTimeZone } from 'date-fns-tz';
 
-const TIMEZONE = 'Asia/Jakarta';
+export const TIMEZONE = 'Asia/Jakarta';
 
 // whenever any client input from Asia/Jakarta GMT+7 (current), convert to UTC date
 export function toUTC(dateString: string): Date {

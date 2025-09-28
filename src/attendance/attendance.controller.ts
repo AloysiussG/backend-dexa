@@ -6,13 +6,28 @@ import { Roles } from 'src/common/roles.decorator';
 import {
   AttendanceDetailDtoResponse,
   AttendanceListDtoResponse,
+  CurrentAttendanceDetailDtoResponse,
 } from './dto/get-attendance.dto';
 import { WebResponse } from 'src/model/web.dto';
+import { Auth } from 'src/common/auth.decorator';
+import type { User } from '@prisma/client';
 
 @UseGuards(RolesGuard)
 @Controller('/api/attendances')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
+
+  // Get current attendance for current user
+  @Get('/current')
+  async getCurrentAttendanceOfUser(
+    @Auth() user: User,
+  ): Promise<WebResponse<CurrentAttendanceDetailDtoResponse>> {
+    const data = await this.attendanceService.getCurrentAttendanceOfUser(user);
+    return {
+      data,
+      message: `Your attendance details retrieved successfully for today.`,
+    };
+  }
 
   // (1) List attendances for a date
   @Get()

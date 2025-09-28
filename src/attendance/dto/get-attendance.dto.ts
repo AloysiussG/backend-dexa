@@ -19,3 +19,15 @@ export class AttendanceDetailDtoResponse {
   workingHours?: string; // calculated from checkInTime and checkOutTime
   photoUrl?: string | null;
 }
+
+export class CurrentAttendanceDetailDtoResponse {
+  id?: number | null;
+  name: string;
+  role: string;
+  date: string;
+  checkInTime?: string | null;
+  checkOutTime?: string | null;
+  status?: 'Present' | 'Late' | 'Absent';
+  workingHours?: string; // calculated from checkInTime and checkOutTime
+  photoUrl?: string | null;
+}
