@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { LoggerService } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 // sementara tidak menggunakan .env supaya mudah &
 // dapat langsung dipakai untuk test
@@ -11,8 +13,10 @@ export const URL = {
   NEST_BACKEND_APP_URL: 'http://localhost:8000',
 };
 
+export const PORT = process.env.PORT ?? 8000;
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // cookie parser
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -30,6 +34,11 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
-  await app.listen(process.env.PORT ?? 8000);
+  // serve static uploads
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/', // e.g. http://localhost:8000/uploads/images/xxx.png
+  });
+
+  await app.listen(PORT);
 }
 bootstrap();
