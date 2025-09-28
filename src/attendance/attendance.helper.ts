@@ -7,8 +7,8 @@ export const MIN_CHECK_OUT_TIME = '17:00';
 export const calculateLateDuration = (checkInTimeUTC: Date): string => {
   // Use today’s date in GMT+7 (for both 2 compared)
   const todayStr = formatToGMT7(new Date(), 'yyyy-MM-dd');
-  const actualTime = formatToGMT7(checkInTimeUTC, 'HH:mm:ss');
-  const maxTime = MAX_CHECK_IN_TIME + ':00';
+  const actualTime = formatToGMT7(checkInTimeUTC, 'HH:mm');
+  const maxTime = MAX_CHECK_IN_TIME;
 
   const maxCheckInDate = parse(
     `${todayStr} ${maxTime}`,
@@ -27,10 +27,15 @@ export const calculateLateDuration = (checkInTimeUTC: Date): string => {
 
   // Calculate late duration
   const diffMinutes = differenceInMinutes(actualCheckInDate, maxCheckInDate);
+
   const hours = Math.floor(diffMinutes / 60);
   const minutes = diffMinutes % 60;
 
-  return `${hours}h ${minutes}m`;
+  let result = '';
+  if (hours > 0) result += `${hours}h`;
+  if (minutes > 0) result += `${hours > 0 ? ' ' : ''}${minutes}m`;
+
+  return result;
 };
 
 export const getWorkingHoursInGMT7 = (
