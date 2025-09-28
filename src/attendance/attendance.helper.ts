@@ -33,7 +33,7 @@ export const getAttendanceStatusInGMT7 = (
   // status logic using GMT+7
   let status: 'Present' | 'Late' | 'Absent';
 
-  if (checkInTimeUTC && checkOutTimeUTC) {
+  if (checkInTimeUTC) {
     const checkInLocal = formatToGMT7(checkInTimeUTC, 'HH:mm');
 
     if (checkInLocal <= '08:15') {

@@ -60,7 +60,7 @@ export class AttendanceController {
   }
 
   // Handle check out for current user
-  @Patch('/check-out')
+  @Patch('/check-out/:id')
   async checkOut(
     @Auth() user: User,
     @Param('id') id: string,
